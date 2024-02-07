@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
+    <title>Next Game</title>
+    <style>
+        html,
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.2rem;
+            color: #333;
+            background-image: url("imagenes/fondo.svg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container-principal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin: 20px;
+            min-width: 400px;
+        }
+
+        .equipos {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .equipo-local,
+        .equipo-visitante {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
+        }
+
+        .equipo-local img,
+        .equipo-visitante img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .equipo-local h2,
+        .equipo-visitante h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .equipo-local h3,
+        .equipo-visitante h3 {
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .fecha {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+
+        .lugar {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .countdown {
+            font-family: 'Silkscreen', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-top: 1rem;
+        }
+
+        .opacidad-fondo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #858585;
+            z-index: -1;
+            animation: .4s ease-in-out .4s forwards opacidad;
+        }
+
+        @keyframes opacidad {
+            from {
+                background-color: #858585;
+            }
+
+            to {
+                background-color: transparent;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container-principal {
+                min-width: 600px;
+            }
+
+            .equipo-local img,
+            .equipo-visitante img {
+                width: 200px;
+                height: 200px;
+            }
+
+            .countdown {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="opacidad-fondo"></div>
+        <div class="container-principal">
+            <div class="equipos">
+                <div class="equipo-local"></div>
+                <div class="vs">VS</div>
+                <div class="equipo-visitante"></div>
+            </div>
+            <div class="fecha" id="fecha"></div>
+            <div class="hora" id="hora"></div>
+            <div class="lugar" id="lugar"></div>
+            <div class="countdown" id="countdown">⚽⚽⚽⚽</div>
+        </div>
+    </main>
+</body>
+<script src="equipos.js"></script>
+<script src="logos.js"></script>
+<script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const equipo = urlParams.get('equipo');
+    const divFecha = document.getElementById('fecha');
+    const divHora = document.getElementById('hora');
+    const divLugar = document.getElementById('lugar');
+    const divCountdown = document.getElementById('countdown');
+    const divEquipoLocal = document.querySelector('.equipo-local');
+    const divEquipoVisitante = document.querySelector('.equipo-visitante');
+
+    var today = new Date();
+    var fechasPosibles = Object.keys(equipos[equipo]);
+    for (var i = 0; i < fechasPosibles.length; i++) {
+        var date = new Date(fechasPosibles[i]);
+        if (date > today) {
+            cargarDatosDeEquipo(equipos[equipo][fechasPosibles[i]], fechasPosibles[i]);
+            countdown(fechasPosibles[i]);
+            break;
+        }
+    }
+
+    function cargarDatosDeEquipo(datos, fecha) {
+        console.log(datos);
+        var fechaFinal = new Date(fecha).toLocaleString('es-ES', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        var horaFinal = new Date(fecha).toLocaleString('es-ES', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        });
+
+        divFecha.innerHTML = fechaFinal;
+        divHora.innerHTML = horaFinal;
+        divLugar.innerHTML = datos["lugar"];
+        if (datos["local"] == true){
+            divEquipoLocal.innerHTML += `<img src="imagenes/logos/${logos[equipo]}" alt="${equipo} Logo">`;
+            divEquipoVisitante.innerHTML += `<img src="imagenes/logos/${logos[datos["opponent"]]}" alt="${datos["opponent"]} Logo">`;
+        } else {
+            divEquipoLocal.innerHTML += `<img src="imagenes/logos/${logos[datos["opponent"]]}" alt="${datos["opponent"]} Logo">`;
+            divEquipoVisitante.innerHTML += `<img src="imagenes/logos/${logos[equipo]}" alt="${equipo} Logo">`;
+        }
+        // divEquipoLocal.innerHTML += `<img src="imagenes/logos/${logos[equipo]}" alt="${equipo} Logo">`;
+        // divEquipoVisitante.innerHTML += `<img src="imagenes/logos/${logos[datos["opponent"]]}" alt="${datos["opponent"]} Logo">`;
+    }
+
+    function countdown(fecha) {
+        var countDownDate = new Date(fecha).getTime();
+        var x = setInterval(function () {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            divCountdown.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+            if (distance < 0) {
+                clearInterval(x);
+                divCountdown.innerHTML = "EXPIRED";
+            }
+        }, 1000);
+    }
+</script>
+
+</html>
