@@ -7,7 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
-    <title>Next Game</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-475SSTM0WC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-475SSTM0WC');
+    </script>
+    <title>Cuando Juega</title>
     <style>
         html,
         * {
@@ -196,7 +205,7 @@
         divFecha.innerHTML = fechaFinal;
         divHora.innerHTML = horaFinal;
         divLugar.innerHTML = datos["lugar"];
-        if (datos["local"] == true){
+        if (datos["local"] == true) {
             divEquipoLocal.innerHTML += `<img src="imagenes/logos/${logos[equipo]}" alt="${equipo} Logo">`;
             divEquipoVisitante.innerHTML += `<img src="imagenes/logos/${logos[datos["opponent"]]}" alt="${datos["opponent"]} Logo">`;
         } else {
